@@ -3,6 +3,7 @@
 1. pip install -r requirements.txt
 2. cd testCases
 3. Command(To execute the Framework): `pytest --html=..\\Results\\report.html test_conversations.py`
+
 Note: Configurations\config.ini(To configure the Bearer Token) 
 
 # Reports and Logs:
