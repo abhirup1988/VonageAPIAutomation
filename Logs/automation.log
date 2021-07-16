@@ -1,0 +1,80 @@
+17/Jul/2021 00:35:14: INFO: Create Session
+17/Jul/2021 00:35:14: INFO: Starting Test_001_conversation::test_create_and_delete_conversations********
+17/Jul/2021 00:35:14: INFO: Creating Conversation...
+17/Jul/2021 00:35:16: INFO: {"id":"CON-8d35d0c0-7d08-4202-895b-ef19232c0f4f","href":"https://api.nexmo.com/v0.1/conversations/CON-8d35d0c0-7d08-4202-895b-ef19232c0f4f"}
+17/Jul/2021 00:35:16: INFO: Deleting Conversation...
+17/Jul/2021 00:35:16: INFO: https://api.nexmo.com/v0.1/conversations/CON-8d35d0c0-7d08-4202-895b-ef19232c0f4f
+17/Jul/2021 00:35:16: INFO: {}
+17/Jul/2021 00:35:16: INFO: Create Session
+17/Jul/2021 00:35:16: INFO: Starting Test_001_conversation::test_create_duplicate_conversations********
+17/Jul/2021 00:35:16: INFO: Creating Conversation...
+17/Jul/2021 00:35:18: INFO: {"id":"CON-1182b9e0-9ab8-431e-9fd6-4f2de226250c","href":"https://api.nexmo.com/v0.1/conversations/CON-1182b9e0-9ab8-431e-9fd6-4f2de226250c"}
+17/Jul/2021 00:35:18: INFO: Creating Conversation...
+17/Jul/2021 00:35:18: INFO: {"description":"The request failed because the conversation name already exists. Please provide a unique conversation name and try again.","code":"conversation:error:duplicate-name"}
+17/Jul/2021 00:35:18: INFO: Deleting Conversation...
+17/Jul/2021 00:35:18: INFO: https://api.nexmo.com/v0.1/conversations/CON-1182b9e0-9ab8-431e-9fd6-4f2de226250c
+17/Jul/2021 00:35:18: INFO: {}
+17/Jul/2021 00:35:18: INFO: Create Session
+17/Jul/2021 00:35:18: INFO: Creating User...
+17/Jul/2021 00:35:20: INFO: {"id":"USR-79aeb94e-a98c-45e3-87be-9c35f9b127b2","href":"https://api.nexmo.com/v0.1/users/USR-79aeb94e-a98c-45e3-87be-9c35f9b127b2"}
+17/Jul/2021 00:35:20: INFO: Deleting User....
+17/Jul/2021 00:35:20: INFO: {}
+17/Jul/2021 00:35:20: INFO: Create Session
+17/Jul/2021 00:35:20: INFO: Starting Test_003_createmember::test_createmember********
+17/Jul/2021 00:35:20: INFO: Create Conversation****************
+17/Jul/2021 00:35:20: INFO: Creating Conversation...
+17/Jul/2021 00:35:21: INFO: {"id":"CON-5a5e920e-241e-4651-9ddf-cc711f584ec9","href":"https://api.nexmo.com/v0.1/conversations/CON-5a5e920e-241e-4651-9ddf-cc711f584ec9"}
+17/Jul/2021 00:35:21: INFO: Create User****************
+17/Jul/2021 00:35:21: INFO: Creating User...
+17/Jul/2021 00:35:22: INFO: {"id":"USR-a9d2b329-8af8-464b-b524-5c00d2d1836e","href":"https://api.nexmo.com/v0.1/users/USR-a9d2b329-8af8-464b-b524-5c00d2d1836e"}
+17/Jul/2021 00:35:22: INFO: Create Member****************
+17/Jul/2021 00:35:22: INFO: Creating Member....
+17/Jul/2021 00:35:22: INFO: https://api.nexmo.com/v0.1/conversations/CON-ed64c1fd-a474-46a1-bc5f-7e97df06bd40/members
+17/Jul/2021 00:35:22: INFO: {'action': 'join', 'user_id': 'USR-a9d2b329-8af8-464b-b524-5c00d2d1836e', 'member_id': 'MEM-5e84b90a-d6b2-48a1-b382-bcaec7652d56', 'channel': {'type': 'phone', 'leg_id': 'a595959595959595995', 'from': 'MEM-5e84b90a-d6b2-48a1-b382-bcaec7652d56', 'to': 'MEM-5e84b90a-d6b2-48a1-b382-bcaec7652d56', 'leg_ids': [{'leg_id': 'a595959595959595995'}]}, 'media': {'audio_settings': {'enabled': False, 'earmuffed': False, 'muted': False}}, 'knocking_id': 'a972836a-450f-35fa-156c-52a2ab5b7d25', 'member_id_inviting': 'MEM-5e84b90a-d6b2-48a1-b382-bcaec7652d56'}
+17/Jul/2021 00:35:22: INFO: {"description":"Input validation failure.","error":{"0":["\"0\" must be a string"],"to":["\"type\" is none from allowed ones [phone, sip, app, vbc, websocket]"],"from":["\"type\" is none from allowed ones [phone, sip, app, vbc, websocket]"],"leg_id":["\"leg_id\" is not allowed"]},"code":"http:error:validation-fail"}
+17/Jul/2021 00:35:22: INFO: Delete ****************
+17/Jul/2021 00:35:22: INFO: Deleting Conversation...
+17/Jul/2021 00:35:22: INFO: https://api.nexmo.com/v0.1/conversations/CON-5a5e920e-241e-4651-9ddf-cc711f584ec9
+17/Jul/2021 00:35:22: INFO: {}
+17/Jul/2021 00:35:22: INFO: Deleting User....
+17/Jul/2021 00:35:23: INFO: {}
+17/Jul/2021 00:39:45: INFO: Create Session
+17/Jul/2021 00:39:45: INFO: Starting Test_001_conversation::test_create_and_delete_conversations********
+17/Jul/2021 00:39:45: INFO: Creating Conversation...
+17/Jul/2021 00:39:47: INFO: {"id":"CON-d833f8ae-d53c-44e2-adb9-56acc8ef4033","href":"https://api.nexmo.com/v0.1/conversations/CON-d833f8ae-d53c-44e2-adb9-56acc8ef4033"}
+17/Jul/2021 00:39:47: INFO: Deleting Conversation...
+17/Jul/2021 00:39:47: INFO: https://api.nexmo.com/v0.1/conversations/CON-d833f8ae-d53c-44e2-adb9-56acc8ef4033
+17/Jul/2021 00:39:47: INFO: {}
+17/Jul/2021 00:39:47: INFO: Create Session
+17/Jul/2021 00:39:47: INFO: Starting Test_001_conversation::test_create_duplicate_conversations********
+17/Jul/2021 00:39:47: INFO: Creating Conversation...
+17/Jul/2021 00:39:49: INFO: {"id":"CON-3b5c8569-4280-4e1c-aefe-b26fd3f9ac48","href":"https://api.nexmo.com/v0.1/conversations/CON-3b5c8569-4280-4e1c-aefe-b26fd3f9ac48"}
+17/Jul/2021 00:39:49: INFO: Creating Conversation...
+17/Jul/2021 00:39:49: INFO: {"description":"The request failed because the conversation name already exists. Please provide a unique conversation name and try again.","code":"conversation:error:duplicate-name"}
+17/Jul/2021 00:39:49: INFO: Deleting Conversation...
+17/Jul/2021 00:39:49: INFO: https://api.nexmo.com/v0.1/conversations/CON-3b5c8569-4280-4e1c-aefe-b26fd3f9ac48
+17/Jul/2021 00:39:49: INFO: {}
+17/Jul/2021 00:39:50: INFO: Create Session
+17/Jul/2021 00:39:50: INFO: Creating User...
+17/Jul/2021 00:39:51: INFO: {"id":"USR-d91057a2-04db-4b8d-8469-d333a428f364","href":"https://api.nexmo.com/v0.1/users/USR-d91057a2-04db-4b8d-8469-d333a428f364"}
+17/Jul/2021 00:39:51: INFO: Deleting User....
+17/Jul/2021 00:39:51: INFO: {}
+17/Jul/2021 00:39:51: INFO: Create Session
+17/Jul/2021 00:39:51: INFO: Starting Test_003_createmember::test_createmember********
+17/Jul/2021 00:39:51: INFO: Create Conversation****************
+17/Jul/2021 00:39:51: INFO: Creating Conversation...
+17/Jul/2021 00:39:54: INFO: {"id":"CON-4ab21468-69b8-4294-852d-e1706f8db8fc","href":"https://api.nexmo.com/v0.1/conversations/CON-4ab21468-69b8-4294-852d-e1706f8db8fc"}
+17/Jul/2021 00:39:54: INFO: Create User****************
+17/Jul/2021 00:39:54: INFO: Creating User...
+17/Jul/2021 00:39:54: INFO: {"id":"USR-5edd1ae6-f912-42d8-a8bd-2e40cb84b204","href":"https://api.nexmo.com/v0.1/users/USR-5edd1ae6-f912-42d8-a8bd-2e40cb84b204"}
+17/Jul/2021 00:39:54: INFO: Create Member****************
+17/Jul/2021 00:39:54: INFO: Creating Member....
+17/Jul/2021 00:39:54: INFO: https://api.nexmo.com/v0.1/conversations/CON-ed64c1fd-a474-46a1-bc5f-7e97df06bd40/members
+17/Jul/2021 00:39:54: INFO: {'action': 'join', 'user_id': 'USR-5edd1ae6-f912-42d8-a8bd-2e40cb84b204', 'member_id': 'MEM-5e84b90a-d6b2-48a1-b382-bcaec7652d56', 'channel': {'type': 'phone', 'leg_id': 'a595959595959595995', 'from': 'MEM-5e84b90a-d6b2-48a1-b382-bcaec7652d56', 'to': 'MEM-5e84b90a-d6b2-48a1-b382-bcaec7652d56', 'leg_ids': [{'leg_id': 'a595959595959595995'}]}, 'media': {'audio_settings': {'enabled': False, 'earmuffed': False, 'muted': False}}, 'knocking_id': 'a972836a-450f-35fa-156c-52a2ab5b7d25', 'member_id_inviting': 'MEM-5e84b90a-d6b2-48a1-b382-bcaec7652d56'}
+17/Jul/2021 00:39:55: INFO: {"description":"Input validation failure.","error":{"0":["\"0\" must be a string"],"to":["\"type\" is none from allowed ones [phone, sip, app, vbc, websocket]"],"from":["\"type\" is none from allowed ones [phone, sip, app, vbc, websocket]"],"leg_id":["\"leg_id\" is not allowed"]},"code":"http:error:validation-fail"}
+17/Jul/2021 00:39:55: INFO: Delete ****************
+17/Jul/2021 00:39:55: INFO: Deleting Conversation...
+17/Jul/2021 00:39:55: INFO: https://api.nexmo.com/v0.1/conversations/CON-4ab21468-69b8-4294-852d-e1706f8db8fc
+17/Jul/2021 00:39:55: INFO: {}
+17/Jul/2021 00:39:55: INFO: Deleting User....
+17/Jul/2021 00:39:55: INFO: {}

@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <title>Test Report</title>
+    <link href="assets/style.css" rel="stylesheet" type="text/css"/></head>
+  <body onLoad="init()">
+    <script>/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+
+function toArray(iter) {
+    if (iter === null) {
+        return null;
+    }
+    return Array.prototype.slice.call(iter);
+}
+
+function find(selector, elem) { // eslint-disable-line no-redeclare
+    if (!elem) {
+        elem = document;
+    }
+    return elem.querySelector(selector);
+}
+
+function findAll(selector, elem) {
+    if (!elem) {
+        elem = document;
+    }
+    return toArray(elem.querySelectorAll(selector));
+}
+
+function sortColumn(elem) {
+    toggleSortStates(elem);
+    const colIndex = toArray(elem.parentNode.childNodes).indexOf(elem);
+    let key;
+    if (elem.classList.contains('result')) {
+        key = keyResult;
+    } else if (elem.classList.contains('links')) {
+        key = keyLink;
+    } else {
+        key = keyAlpha;
+    }
+    sortTable(elem, key(colIndex));
+}
+
+function showAllExtras() { // eslint-disable-line no-unused-vars
+    findAll('.col-result').forEach(showExtras);
+}
+
+function hideAllExtras() { // eslint-disable-line no-unused-vars
+    findAll('.col-result').forEach(hideExtras);
+}
+
+function showExtras(colresultElem) {
+    const extras = colresultElem.parentNode.nextElementSibling;
+    const expandcollapse = colresultElem.firstElementChild;
+    extras.classList.remove('collapsed');
+    expandcollapse.classList.remove('expander');
+    expandcollapse.classList.add('collapser');
+}
+
+function hideExtras(colresultElem) {
+    const extras = colresultElem.parentNode.nextElementSibling;
+    const expandcollapse = colresultElem.firstElementChild;
+    extras.classList.add('collapsed');
+    expandcollapse.classList.remove('collapser');
+    expandcollapse.classList.add('expander');
+}
+
+function showFilters() {
+    const filterItems = document.getElementsByClassName('filter');
+    for (let i = 0; i < filterItems.length; i++)
+        filterItems[i].hidden = false;
+}
+
+function addCollapse() {
+    // Add links for show/hide all
+    const resulttable = find('table#results-table');
+    const showhideall = document.createElement('p');
+    showhideall.innerHTML = '<a href="javascript:showAllExtras()">Show all details</a> / ' +
+                            '<a href="javascript:hideAllExtras()">Hide all details</a>';
+    resulttable.parentElement.insertBefore(showhideall, resulttable);
+
+    // Add show/hide link to each result
+    findAll('.col-result').forEach(function(elem) {
+        const collapsed = getQueryParameter('collapsed') || 'Passed';
+        const extras = elem.parentNode.nextElementSibling;
+        const expandcollapse = document.createElement('span');
+        if (extras.classList.contains('collapsed')) {
+            expandcollapse.classList.add('expander');
+        } else if (collapsed.includes(elem.innerHTML)) {
+            extras.classList.add('collapsed');
+            expandcollapse.classList.add('expander');
+        } else {
+            expandcollapse.classList.add('collapser');
+        }
+        elem.appendChild(expandcollapse);
+
+        elem.addEventListener('click', function(event) {
+            if (event.currentTarget.parentNode.nextElementSibling.classList.contains('collapsed')) {
+                showExtras(event.currentTarget);
+            } else {
+                hideExtras(event.currentTarget);
+            }
+        });
+    });
+}
+
+function getQueryParameter(name) {
+    const match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+    return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+}
+
+function init () { // eslint-disable-line no-unused-vars
+    resetSortHeaders();
+
+    addCollapse();
+
+    showFilters();
+
+    sortColumn(find('.initial-sort'));
+
+    findAll('.sortable').forEach(function(elem) {
+        elem.addEventListener('click',
+            function() {
+                sortColumn(elem);
+            }, false);
+    });
+}
+
+function sortTable(clicked, keyFunc) {
+    const rows = findAll('.results-table-row');
+    const reversed = !clicked.classList.contains('asc');
+    const sortedRows = sort(rows, keyFunc, reversed);
+    /* Whole table is removed here because browsers acts much slower
+     * when appending existing elements.
+     */
+    const thead = document.getElementById('results-table-head');
+    document.getElementById('results-table').remove();
+    const parent = document.createElement('table');
+    parent.id = 'results-table';
+    parent.appendChild(thead);
+    sortedRows.forEach(function(elem) {
+        parent.appendChild(elem);
+    });
+    document.getElementsByTagName('BODY')[0].appendChild(parent);
+}
+
+function sort(items, keyFunc, reversed) {
+    const sortArray = items.map(function(item, i) {
+        return [keyFunc(item), i];
+    });
+
+    sortArray.sort(function(a, b) {
+        const keyA = a[0];
+        const keyB = b[0];
+
+        if (keyA == keyB) return 0;
+
+        if (reversed) {
+            return keyA < keyB ? 1 : -1;
+        } else {
+            return keyA > keyB ? 1 : -1;
+        }
+    });
+
+    return sortArray.map(function(item) {
+        const index = item[1];
+        return items[index];
+    });
+}
+
+function keyAlpha(colIndex) {
+    return function(elem) {
+        return elem.childNodes[1].childNodes[colIndex].firstChild.data.toLowerCase();
+    };
+}
+
+function keyLink(colIndex) {
+    return function(elem) {
+        const dataCell = elem.childNodes[1].childNodes[colIndex].firstChild;
+        return dataCell == null ? '' : dataCell.innerText.toLowerCase();
+    };
+}
+
+function keyResult(colIndex) {
+    return function(elem) {
+        const strings = ['Error', 'Failed', 'Rerun', 'XFailed', 'XPassed',
+            'Skipped', 'Passed'];
+        return strings.indexOf(elem.childNodes[1].childNodes[colIndex].firstChild.data);
+    };
+}
+
+function resetSortHeaders() {
+    findAll('.sort-icon').forEach(function(elem) {
+        elem.parentNode.removeChild(elem);
+    });
+    findAll('.sortable').forEach(function(elem) {
+        const icon = document.createElement('div');
+        icon.className = 'sort-icon';
+        icon.textContent = 'vvv';
+        elem.insertBefore(icon, elem.firstChild);
+        elem.classList.remove('desc', 'active');
+        elem.classList.add('asc', 'inactive');
+    });
+}
+
+function toggleSortStates(elem) {
+    //if active, toggle between asc and desc
+    if (elem.classList.contains('active')) {
+        elem.classList.toggle('asc');
+        elem.classList.toggle('desc');
+    }
+
+    //if inactive, reset all other functions and add ascending active
+    if (elem.classList.contains('inactive')) {
+        resetSortHeaders();
+        elem.classList.remove('inactive');
+        elem.classList.add('active');
+    }
+}
+
+function isAllRowsHidden(value) {
+    return value.hidden == false;
+}
+
+function filterTable(elem) { // eslint-disable-line no-unused-vars
+    const outcomeAtt = 'data-test-result';
+    const outcome = elem.getAttribute(outcomeAtt);
+    const classOutcome = outcome + ' results-table-row';
+    const outcomeRows = document.getElementsByClassName(classOutcome);
+
+    for(let i = 0; i < outcomeRows.length; i++){
+        outcomeRows[i].hidden = !elem.checked;
+    }
+
+    const rows = findAll('.results-table-row').filter(isAllRowsHidden);
+    const allRowsHidden = rows.length == 0 ? true : false;
+    const notFoundMessage = document.getElementById('not-found-message');
+    notFoundMessage.hidden = !allRowsHidden;
+}
+</script>
+    <h1>report.html</h1>
+    <p>Report generated on 17-Jul-2021 at 00:39:55 by <a href="https://pypi.python.org/pypi/pytest-html">pytest-html</a> v3.1.1</p>
+    <h2>Environment</h2>
+    <table id="environment">
+      <tr>
+        <td>JAVA_HOME</td>
+        <td>C:\Program Files\Java\openjdk-11.0.2</td></tr>
+      <tr>
+        <td>Packages</td>
+        <td>{"pluggy": "0.13.1", "py": "1.10.0", "pytest": "6.2.3"}</td></tr>
+      <tr>
+        <td>Platform</td>
+        <td>Windows-7-6.1.7601-SP1</td></tr>
+      <tr>
+        <td>Plugins</td>
+        <td>{"html": "3.1.1", "metadata": "1.11.0"}</td></tr>
+      <tr>
+        <td>Python</td>
+        <td>3.6.5</td></tr></table>
+    <h2>Summary</h2>
+    <p>4 tests ran in 10.73 seconds. </p>
+    <p class="filter" hidden="true">(Un)check the boxes to filter the results.</p><input checked="true" class="filter" data-test-result="passed" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="passed">3 passed</span>, <input checked="true" class="filter" data-test-result="skipped" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="skipped">0 skipped</span>, <input checked="true" class="filter" data-test-result="failed" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="failed">1 failed</span>, <input checked="true" class="filter" data-test-result="error" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="error">0 errors</span>, <input checked="true" class="filter" data-test-result="xfailed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="xfailed">0 expected failures</span>, <input checked="true" class="filter" data-test-result="xpassed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="xpassed">0 unexpected passes</span>
+    <h2>Results</h2>
+    <table id="results-table">
+      <thead id="results-table-head">
+        <tr>
+          <th class="sortable result initial-sort" col="result">Result</th>
+          <th class="sortable" col="name">Test</th>
+          <th class="sortable" col="duration">Duration</th>
+          <th class="sortable links" col="links">Links</th></tr>
+        <tr hidden="true" id="not-found-message">
+          <th colspan="4">No results found. Try to check the filters</th></tr></thead>
+      <tbody class="failed results-table-row">
+        <tr>
+          <td class="col-result">Failed</td>
+          <td class="col-name">test_conversations.py::Test_003_createmember::test_createmember</td>
+          <td class="col-duration">3.84</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">self = &lt;testCases.test_conversations.Test_003_createmember object at 0x00000000046DA9B0&gt;, create_session = &lt;requests.sessions.Session object at 0x00000000046DA208&gt;<br/><br/>    def test_createmember(self, create_session):<br/>        logger.info(f&quot;Starting Test_003_createmember::test_createmember********&quot;)<br/>        self.api_request = create_session<br/>        logger.info(&quot;Create Conversation****************&quot;)<br/>        payload_path = &#x27;\\testCases\\json\\create_conversation.json&#x27;<br/>        conver = conversations(server=server, api_request=self.api_request)<br/>        testdata = {&quot;name&quot;: &quot;abhiuser2_chat&quot;, &quot;display_name&quot;: &quot;abhiuser2_chat&quot;}<br/>        cc_response = conver.create_conversation(payload_path, testdata=testdata)<br/>        assert cc_response.status_code == 200<br/>        self.conversation_id = cc_response.json()[&#x27;id&#x27;]<br/>    <br/>        logger.info(&quot;Create User****************&quot;)<br/>        payload_path = &#x27;\\testCases\\json\\create_user.json&#x27;<br/>        conver = conversations(server=server, api_request=self.api_request)<br/>        test_data = {&quot;name&quot;: &quot;abhiuser2&quot;, &quot;display_name&quot;: &quot;newfpuser2&quot;}<br/>        cu_response = conver.create_user(payload_path=payload_path, testdata=test_data)<br/>        assert cu_response.status_code == 200<br/>        assert cu_response.json()[&#x27;id&#x27;]<br/>        self.user_id = cu_response.json()[&#x27;id&#x27;]<br/>    <br/>        logger.info(&quot;Create Member****************&quot;)<br/>        payload_path = &#x27;\\testCases\\json\\create_member.json&#x27;<br/>        conver = conversations(server=server, api_request=self.api_request)<br/>        testdata = {&quot;user_id&quot;: self.user_id, &quot;member_id&quot;: &quot;MEM-5e84b90a-d6b2-48a1-b382-bcaec7652d56&quot;, &quot;member_id_inviting&quot;: &quot;MEM-5e84b90a-d6b2-48a1-b382-bcaec7652d56&quot;}<br/>        conversation_id = &#x27;CON-ed64c1fd-a474-46a1-bc5f-7e97df06bd40&#x27;<br/>        cm_response = conver.create_member(conversation_id=conversation_id, payload_path=payload_path, testdata=testdata)<br/>&gt;       assert cm_response.status_code == 200<br/><span class="error">E       assert 400 == 200</span><br/><span class="error">E        +  where 400 = &lt;Response [400]&gt;.status_code</span><br/><br/>test_conversations.py:74: AssertionError<br/> -------------------------------Captured log setup------------------------------- <br/>INFO     root:conftest.py:10 Create Session<br/> -------------------------------Captured log call-------------------------------- <br/>INFO     root:test_conversations.py:49 Starting Test_003_createmember::test_createmember********
+INFO     root:test_conversations.py:51 Create Conversation****************
+INFO     root:conversations.py:13 Creating Conversation...
+INFO     root:conversations.py:20 {&quot;id&quot;:&quot;CON-4ab21468-69b8-4294-852d-e1706f8db8fc&quot;,&quot;href&quot;:&quot;https://api.nexmo.com/v0.1/conversations/CON-4ab21468-69b8-4294-852d-e1706f8db8fc&quot;}
+INFO     root:test_conversations.py:59 Create User****************
+INFO     root:conversations.py:33 Creating User...
+INFO     root:conversations.py:40 {&quot;id&quot;:&quot;USR-5edd1ae6-f912-42d8-a8bd-2e40cb84b204&quot;,&quot;href&quot;:&quot;https://api.nexmo.com/v0.1/users/USR-5edd1ae6-f912-42d8-a8bd-2e40cb84b204&quot;}
+INFO     root:test_conversations.py:68 Create Member****************
+INFO     root:conversations.py:51 Creating Member....
+INFO     root:conversations.py:53 https://api.nexmo.com/v0.1/conversations/CON-ed64c1fd-a474-46a1-bc5f-7e97df06bd40/members
+INFO     root:conversations.py:58 {&#x27;action&#x27;: &#x27;join&#x27;, &#x27;user_id&#x27;: &#x27;USR-5edd1ae6-f912-42d8-a8bd-2e40cb84b204&#x27;, &#x27;member_id&#x27;: &#x27;MEM-5e84b90a-d6b2-48a1-b382-bcaec7652d56&#x27;, &#x27;channel&#x27;: {&#x27;type&#x27;: &#x27;phone&#x27;, &#x27;leg_id&#x27;: &#x27;a595959595959595995&#x27;, &#x27;from&#x27;: &#x27;MEM-5e84b90a-d6b2-48a1-b382-bcaec7652d56&#x27;, &#x27;to&#x27;: &#x27;MEM-5e84b90a-d6b2-48a1-b382-bcaec7652d56&#x27;, &#x27;leg_ids&#x27;: [{&#x27;leg_id&#x27;: &#x27;a595959595959595995&#x27;}]}, &#x27;media&#x27;: {&#x27;audio_settings&#x27;: {&#x27;enabled&#x27;: False, &#x27;earmuffed&#x27;: False, &#x27;muted&#x27;: False}}, &#x27;knocking_id&#x27;: &#x27;a972836a-450f-35fa-156c-52a2ab5b7d25&#x27;, &#x27;member_id_inviting&#x27;: &#x27;MEM-5e84b90a-d6b2-48a1-b382-bcaec7652d56&#x27;}
+INFO     root:conversations.py:60 {&quot;description&quot;:&quot;Input validation failure.&quot;,&quot;error&quot;:{&quot;0&quot;:[&quot;\&quot;0\&quot; must be a string&quot;],&quot;to&quot;:[&quot;\&quot;type\&quot; is none from allowed ones [phone, sip, app, vbc, websocket]&quot;],&quot;from&quot;:[&quot;\&quot;type\&quot; is none from allowed ones [phone, sip, app, vbc, websocket]&quot;],&quot;leg_id&quot;:[&quot;\&quot;leg_id\&quot; is not allowed&quot;]},&quot;code&quot;:&quot;http:error:validation-fail&quot;}<br/> -----------------------------Captured log teardown------------------------------ <br/>INFO     root:test_conversations.py:77 Delete ****************
+INFO     root:conversations.py:25 Deleting Conversation...
+INFO     root:conversations.py:27 https://api.nexmo.com/v0.1/conversations/CON-4ab21468-69b8-4294-852d-e1706f8db8fc
+INFO     root:conversations.py:29 {}
+INFO     root:conversations.py:44 Deleting User....
+INFO     root:conversations.py:47 {}<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_conversations.py::Test_001_conversation::test_create_and_delete_conversations</td>
+          <td class="col-duration">2.48</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log setup------------------------------- <br/>INFO     root:conftest.py:10 Create Session<br/> -------------------------------Captured log call-------------------------------- <br/>INFO     root:test_conversations.py:11 Starting Test_001_conversation::test_create_and_delete_conversations********
+INFO     root:conversations.py:13 Creating Conversation...
+INFO     root:conversations.py:20 {&quot;id&quot;:&quot;CON-d833f8ae-d53c-44e2-adb9-56acc8ef4033&quot;,&quot;href&quot;:&quot;https://api.nexmo.com/v0.1/conversations/CON-d833f8ae-d53c-44e2-adb9-56acc8ef4033&quot;}
+INFO     root:conversations.py:25 Deleting Conversation...
+INFO     root:conversations.py:27 https://api.nexmo.com/v0.1/conversations/CON-d833f8ae-d53c-44e2-adb9-56acc8ef4033
+INFO     root:conversations.py:29 {}<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_conversations.py::Test_001_conversation::test_create_duplicate_conversations</td>
+          <td class="col-duration">2.35</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log setup------------------------------- <br/>INFO     root:conftest.py:10 Create Session<br/> -------------------------------Captured log call-------------------------------- <br/>INFO     root:test_conversations.py:22 Starting Test_001_conversation::test_create_duplicate_conversations********
+INFO     root:conversations.py:13 Creating Conversation...
+INFO     root:conversations.py:20 {&quot;id&quot;:&quot;CON-3b5c8569-4280-4e1c-aefe-b26fd3f9ac48&quot;,&quot;href&quot;:&quot;https://api.nexmo.com/v0.1/conversations/CON-3b5c8569-4280-4e1c-aefe-b26fd3f9ac48&quot;}
+INFO     root:conversations.py:13 Creating Conversation...
+INFO     root:conversations.py:20 {&quot;description&quot;:&quot;The request failed because the conversation name already exists. Please provide a unique conversation name and try again.&quot;,&quot;code&quot;:&quot;conversation:error:duplicate-name&quot;}
+INFO     root:conversations.py:25 Deleting Conversation...
+INFO     root:conversations.py:27 https://api.nexmo.com/v0.1/conversations/CON-3b5c8569-4280-4e1c-aefe-b26fd3f9ac48
+INFO     root:conversations.py:29 {}<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_conversations.py::Test_002_createuser::test_createuser</td>
+          <td class="col-duration">1.83</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log setup------------------------------- <br/>INFO     root:conftest.py:10 Create Session<br/> -------------------------------Captured log call-------------------------------- <br/>INFO     root:conversations.py:33 Creating User...
+INFO     root:conversations.py:40 {&quot;id&quot;:&quot;USR-d91057a2-04db-4b8d-8469-d333a428f364&quot;,&quot;href&quot;:&quot;https://api.nexmo.com/v0.1/users/USR-d91057a2-04db-4b8d-8469-d333a428f364&quot;}
+INFO     root:conversations.py:44 Deleting User....
+INFO     root:conversations.py:47 {}<br/></div></td></tr></tbody></table></body></html>
