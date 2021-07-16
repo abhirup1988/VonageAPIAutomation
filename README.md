@@ -8,7 +8,7 @@ Note: Configurations\config.ini(To configure the Bearer Token)
 
 # Reports and Logs:
 1. Open the file Results\\report.html(Created in the Project directory) to view Logs and Reports. This will also generate Failure Logs and Reports.
-2. I have also committed my Test Result. You can directly view it.
+2. I have committed my Test Reports. You can directly view it in a browser(Results\\report.html).
 
 # Feedback
 1. Using Vonage API, I am not able to Create Member. So I have put that into Failure Testcase.
