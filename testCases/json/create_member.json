@@ -1,0 +1,25 @@
+{
+  "action": "join",
+  "user_id": "USR-defaultvalue",
+  "member_id": "MEM-defaultvalue",
+  "channel": {
+    "type": "phone",
+    "leg_id": "a595959595959595995",
+    "from": "MEM-5e84b90a-d6b2-48a1-b382-bcaec7652d56",
+    "to": "MEM-5e84b90a-d6b2-48a1-b382-bcaec7652d56",
+    "leg_ids": [
+      {
+        "leg_id": "a595959595959595995"
+      }
+    ]
+  },
+  "media": {
+    "audio_settings": {
+      "enabled": false,
+      "earmuffed": false,
+      "muted": false
+    }
+  },
+  "knocking_id": "a972836a-450f-35fa-156c-52a2ab5b7d25",
+  "member_id_inviting": "MEM-63f61863-4a51-4f6b-86e1-46edebio0391"
+}

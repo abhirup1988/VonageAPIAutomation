@@ -1,0 +1,8 @@
+{
+  "name": "abhiuser_chat",
+  "display_name": "abhiuser Chat",
+  "image_url": "https://example.com/image.png",
+  "properties": {
+                "ttl": 60
+                }
+}
